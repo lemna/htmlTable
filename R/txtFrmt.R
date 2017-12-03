@@ -229,6 +229,13 @@ txtRound.default = function(x, digits = 0, txt.NA = "", dec = ".", ...){
     if (dec != ".")
       x <- gsub(dec, ".", x)
 
+    # check for scientific notation, use exponential decimal notation
+    if (grepl(pattern = "^[+-]?[[:digit:]]+(\\.[[:digit:]]+)?[Ee]?[+-]?[[:digit:]]+$",
+              x = x)) {
+      x <- as.numeric(x)
+      return(sprintf(fmt = paste0("%1.", digits, "E"), x))
+    }
+
     # Select the first occurring number
     # remove any spaces indicating thousands
     # and convert to numeric
@@ -263,7 +270,7 @@ txtRound.data.frame <- function(x, ...){
 txtRound.table <- function(x, ...){
   return(txtRound.matrix(x, ...))
 }
-  
+
 #' @rdname txtRound
 #' @export
 txtRound.matrix <- function(x, digits = 0, excl.cols, excl.rows, ...){
